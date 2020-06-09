@@ -54,6 +54,7 @@ class Web_linker_Admin {
 
 	}
 
+
 	/**
 	 * Register the stylesheets for the admin area.
 	 *
@@ -99,5 +100,37 @@ class Web_linker_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/web_linker-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
+
+	public function add_admin_page(){
+		add_menu_page('Web Linker Page', 'Web Linker', 'manage_options', 'web-linker', array($this, 'display_visio'));
+	}
+
+
+
+	public function display_visio() {
+		echo '<h1>Créez une viso-conférance</h1>';
+		echo do_shortcode('[react]');
+	}
+
+	/**
+	 * Create Shortcode to display React App
+	 */
+	public function register_shortcodes(){
+
+		add_shortcode( 'react',array($this,'create_shortcode') );
+	}
+
+	public function create_shortcode( $atts = array(), $content = null , $tag = 'react' ){
+		ob_start();
+		?>
+			<script src='https://meet.jit.si/external_api.js'></script>
+			<?php wp_enqueue_script( 'example-app', plugins_url( 'build/index.js', __FILE__ ), array( 'wp-element' ), time(), true ); ?>
+			<div id="app">App goes here</div>
+		<?php 
+		return ob_get_clean();
+	
+	} 
+
+
 
 }
